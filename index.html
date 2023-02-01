@@ -2,7 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto"
+    />
 
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
     <!-- Load d3.js -->
     <!-- <script src="https://d3js.org/d3.v6.js"></script> -->
     <!-- Create an element where the map will take place -->
@@ -11,6 +21,8 @@
       * {
         margin: 0;
         padding: 0;
+        font-family: "Roboto", sans-serif;
+        font-size: 15px;
       }
       body {
         background-color: rgb(101, 209, 209);
@@ -23,11 +35,11 @@
 
       #stats {
         position: absolute;
-        background-color: white;
+        /* background-color: white; */
         width: fit-content;
         opacity: 0;
-        border-radius: 5px;
-        border: 3px solid rgb(255, 60, 0);
+        /* border-radius: 5px; */
+        border: 1px solid rgb(0, 140, 255);
         padding: 5px;
         font-size: 1.5rem;
       }
@@ -55,17 +67,24 @@
   <body>
     <?xml version="1.0"?>
 
-    <div id="stats">
-      <p id="countryp"></p>
-      <p id="noDatap"></p>
-      <p id="medalsp"></p>
-      <p id="malep"></p>
-      <p id="femalep"></p>
+    <div id="stats" class="card">
+      <div id="countryp" class="card-header">
+        <!-- Featured -->
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Quick Stats</h5>
+        <p class="card-text" id="noDatap"></p>
+        <p class="card-text" id="medalsp"></p>
+        <p class="card-text" id="malep"></p>
+        <p class="card-text" id="femalep"></p>
+
+        <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+      </div>
     </div>
 
-    <div id="year">
+    <!-- <div id="year">
       <p id="yearp">Year</p>
-    </div>
+    </div> -->
 
     <svg
       baseprofile="tiny"
