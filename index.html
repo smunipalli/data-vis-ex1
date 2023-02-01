@@ -93,20 +93,33 @@
     <!-- Modal for stats by country -->
     <div
       class="modal fade"
-      id="exampleModalCenter"
+      id="countryModal"
       tabindex="-1"
       role="dialog"
-      aria-labelledby="exampleModalCenterTitle"
+      aria-labelledby="countryModalTitle"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle">
-              Modal title
-            </h5>
+            <h5 class="modal-title" id="countryModalTitle">Modal title</h5>
           </div>
-          <div class="modal-body">...</div>
+          <div class="modal-body">
+            ...
+
+            <script id="modalScript">
+              document.addEventListener(
+                "itemInserted",
+                (e) => {
+                  console.log(JSON.parse(e.value));
+                  localStorage.removeItem(e.key);
+                  // window.localStorage.removeItem(e.key);
+                  // localStorage.clear();
+                },
+                false
+              );
+            </script>
+          </div>
           <div class="modal-footer"></div>
         </div>
       </div>
@@ -2532,6 +2545,7 @@
 
         <script>
           //Wait until the document has loaded
+          let count = 0;
           document.addEventListener("DOMContentLoaded", function () {
             // This fetch will return a promise
             const olympics_data = fetch("./data/olympics.json")
@@ -2608,9 +2622,38 @@
 
                       // show modal
                       e.addEventListener("click", () => {
+                        count += 1;
+                        // console.log(new bootstarp.alert());
+
                         var myModal = new bootstrap.Modal(
-                          document.getElementById("exampleModalCenter")
+                          document.getElementById("countryModal")
                         );
+
+                        document.getElementById("countryModalTitle").innerText =
+                          e.id;
+
+                        const originalSetItem = localStorage.setItem;
+
+                        localStorage.setItem = function (key, value) {
+                          var event = new Event("itemInserted");
+
+                          event.value = value;
+                          event.key = key;
+
+                          document.dispatchEvent(event);
+
+                          originalSetItem.apply(this, arguments);
+                        };
+
+                        country_arr.then((res) => {
+                          console.log(res);
+                          localStorage.setItem(
+                            "countryArr",
+                            JSON.stringify(res)
+                          );
+                        });
+
+                        //Finally display the modal
                         myModal.show();
                       });
                     } else {
