@@ -2555,13 +2555,6 @@
 
             // Show pop up
             document.querySelectorAll(".allPaths").forEach((e) => {
-              e.addEventListener("click", () => {
-                var myModal = new bootstrap.Modal(
-                  document.getElementById("exampleModalCenter")
-                );
-                myModal.show();
-              });
-
               e.addEventListener("mouseover", () => {
                 window.onmousemove = (j) => {
                   x = j.clientX;
@@ -2612,6 +2605,14 @@
                         male.toString();
                       document.getElementById("femalep").innerText =
                         female.toString();
+
+                      // show modal
+                      e.addEventListener("click", () => {
+                        var myModal = new bootstrap.Modal(
+                          document.getElementById("exampleModalCenter")
+                        );
+                        myModal.show();
+                      });
                     } else {
                       document.getElementById("noDatap").innerText = "N/A";
                       document.getElementById("genderTable").style.opacity = 0;
