@@ -7,12 +7,25 @@
       href="https://fonts.googleapis.com/css?family=Roboto"
     />
 
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
+    /> -->
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
     />
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
     <!-- Load d3.js -->
     <!-- <script src="https://d3js.org/d3.v6.js"></script> -->
     <!-- Create an element where the map will take place -->
@@ -77,6 +90,28 @@
   </head>
 
   <body>
+    <!-- Modal for stats by country -->
+    <div
+      class="modal fade"
+      id="exampleModalCenter"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">
+              Modal title
+            </h5>
+          </div>
+          <div class="modal-body">...</div>
+          <div class="modal-footer"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="row justify-content-md-center">
         <?xml version="1.0"?>
@@ -2496,113 +2531,123 @@
         </svg>
 
         <script>
-          // This fetch will return a promise
-          const olympics_data = fetch("./data/olympics.json")
-            .then((response) => {
-              return response.json();
-            })
-            .then((json) => {
-              return json;
-            });
-
-          // Filter by country name
-          const filterByCountry = (countryName) => {
-            return olympics_data.then((res) => {
-              {
-                return res.filter((d) => {
-                  return d.Country == countryName;
-                });
-              }
-            });
-          };
-
-          // Show pop up
-          document.querySelectorAll(".allPaths").forEach((e) => {
-            e.addEventListener("mouseover", () => {
-              window.onmousemove = (j) => {
-                x = j.clientX;
-                y = j.clientY;
-                document.getElementById("stats").style.top = y - 20 + "px";
-                document.getElementById("stats").style.left = x + 10 + "px";
-              };
-
-              e.style.fill = "#ff3c00";
-
-              // generate stats
-              ((countryName) => {
-                country_arr = filterByCountry(countryName);
-                country_arr.then((res) => {
-                  male = res.filter((m) => {
-                    return m.Gender == "M";
-                  }).length;
-                  female = res.filter((m) => {
-                    return m.Gender == "W";
-                  }).length;
-
-                  gold = res.filter((m) => {
-                    return m.Medal == "Gold";
-                  }).length;
-
-                  silver = res.filter((m) => {
-                    return m.Medal == "Silver";
-                  }).length;
-
-                  bronze = res.filter((m) => {
-                    return m.Medal == "Bronze";
-                  }).length;
-
-                  document.getElementById("countryp").innerText = e.id;
-
-                  if (male !== 0 && female !== 0) {
-                    document.getElementById("noDatap").innerText = null;
-                    document.getElementById("genderTable").style.opacity = 1;
-                    document.getElementById("medalsTable").style.opacity = 1;
-                    document.getElementById("goldp").innerText =
-                      gold.toString();
-                    document.getElementById("silverp").innerText =
-                      silver.toString();
-                    document.getElementById("bronzep").innerText =
-                      bronze.toString();
-
-                    document.getElementById("malep").innerText =
-                      male.toString();
-                    document.getElementById("femalep").innerText =
-                      female.toString();
-                  } else {
-                    document.getElementById("noDatap").innerText = "N/A";
-                    document.getElementById("genderTable").style.opacity = 0;
-                    document.getElementById("medalsTable").style.opacity = 0;
-                    document.getElementById("goldp").innerText = null;
-                    document.getElementById("silverp").innerText = null;
-                    document.getElementById("bronzep").innerText = null;
-
-                    document.getElementById("malep").innerText = null;
-                    document.getElementById("femalep").innerText = null;
-                  }
-                });
-              })(e.id);
-
-              document.getElementById("stats").style.opacity = 1;
-            });
-
-            e.addEventListener("mouseleave", () => {
-              e.style.fill = "#ececec";
-              document.getElementById("stats").style.opacity = 0;
-            });
-          });
-          // ================================================
-          // TODO: Only for test remove
-          // Test the filter by country
-          austria_stats = filterByCountry("Austria");
-          austria_stats.then((res) => {
-            console.log(
-              res.filter((m) => {
-                return m.Gender == "M";
+          //Wait until the document has loaded
+          document.addEventListener("DOMContentLoaded", function () {
+            // This fetch will return a promise
+            const olympics_data = fetch("./data/olympics.json")
+              .then((response) => {
+                return response.json();
               })
-            );
+              .then((json) => {
+                return json;
+              });
+
+            // Filter by country name
+            const filterByCountry = (countryName) => {
+              return olympics_data.then((res) => {
+                {
+                  return res.filter((d) => {
+                    return d.Country == countryName;
+                  });
+                }
+              });
+            };
+
+            // Show pop up
+            document.querySelectorAll(".allPaths").forEach((e) => {
+              e.addEventListener("click", () => {
+                var myModal = new bootstrap.Modal(
+                  document.getElementById("exampleModalCenter")
+                );
+                myModal.show();
+              });
+
+              e.addEventListener("mouseover", () => {
+                window.onmousemove = (j) => {
+                  x = j.clientX;
+                  y = j.clientY;
+                  document.getElementById("stats").style.top = y - 20 + "px";
+                  document.getElementById("stats").style.left = x + 10 + "px";
+                };
+
+                e.style.fill = "#ff3c00";
+
+                // generate stats
+                ((countryName) => {
+                  country_arr = filterByCountry(countryName);
+                  country_arr.then((res) => {
+                    male = res.filter((m) => {
+                      return m.Gender == "M";
+                    }).length;
+                    female = res.filter((m) => {
+                      return m.Gender == "W";
+                    }).length;
+
+                    gold = res.filter((m) => {
+                      return m.Medal == "Gold";
+                    }).length;
+
+                    silver = res.filter((m) => {
+                      return m.Medal == "Silver";
+                    }).length;
+
+                    bronze = res.filter((m) => {
+                      return m.Medal == "Bronze";
+                    }).length;
+
+                    document.getElementById("countryp").innerText = e.id;
+
+                    if (male !== 0 && female !== 0) {
+                      document.getElementById("noDatap").innerText = null;
+                      document.getElementById("genderTable").style.opacity = 1;
+                      document.getElementById("medalsTable").style.opacity = 1;
+                      document.getElementById("goldp").innerText =
+                        gold.toString();
+                      document.getElementById("silverp").innerText =
+                        silver.toString();
+                      document.getElementById("bronzep").innerText =
+                        bronze.toString();
+
+                      document.getElementById("malep").innerText =
+                        male.toString();
+                      document.getElementById("femalep").innerText =
+                        female.toString();
+                    } else {
+                      document.getElementById("noDatap").innerText = "N/A";
+                      document.getElementById("genderTable").style.opacity = 0;
+                      document.getElementById("medalsTable").style.opacity = 0;
+                      document.getElementById("goldp").innerText = null;
+                      document.getElementById("silverp").innerText = null;
+                      document.getElementById("bronzep").innerText = null;
+
+                      document.getElementById("malep").innerText = null;
+                      document.getElementById("femalep").innerText = null;
+                    }
+                  });
+                })(e.id);
+
+                document.getElementById("stats").style.opacity = 1;
+              });
+
+              e.addEventListener("mouseleave", () => {
+                e.style.fill = "#ececec";
+                document.getElementById("stats").style.opacity = 0;
+              });
+            });
+            // ================================================
+            // TODO: Only for test remove
+            // Test the filter by country
+            austria_stats = filterByCountry("Austria");
+            austria_stats.then((res) => {
+              console.log(
+                res.filter((m) => {
+                  return m.Gender == "M";
+                })
+              );
+            });
+            console.log(austria_stats);
+            // ================================================
           });
-          console.log(austria_stats);
-          // ================================================
         </script>
       </div>
     </div>
