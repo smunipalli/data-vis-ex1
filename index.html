@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
 
     <!-- Load d3.js -->
-    <script src="https://d3js.org/d3.v6.js"></script>
+    <!-- <script src="https://d3js.org/d3.v6.js"></script> -->
     <!-- Create an element where the map will take place -->
 
     <style>
@@ -21,7 +21,7 @@
         width: 100%; */
       }
 
-      #medal {
+      #stats {
         position: absolute;
         background-color: white;
         width: fit-content;
@@ -37,7 +37,7 @@
         background-color: white;
         width: fit-content;
         border-radius: 5px;
-        border: 3px solid rgb(255, 60, 0);
+        border: 3px solid #ff3c00;
         padding: 5px;
         font-size: 1.5rem;
       }
@@ -55,8 +55,12 @@
   <body>
     <?xml version="1.0"?>
 
-    <div id="medal">
-      <p id="medalp">Medal</p>
+    <div id="stats">
+      <p id="countryp"></p>
+      <p id="noDatap"></p>
+      <p id="medalsp"></p>
+      <p id="malep"></p>
+      <p id="femalep"></p>
     </div>
 
     <div id="year">
@@ -2440,17 +2444,109 @@
 
       // Filter by country name
       const filterByCountry = (countryName) => {
-        olympics_data.then((res) =>
-          console.log(
-            res.filter((d) => {
+        return olympics_data.then((res) => {
+          {
+            return res.filter((d) => {
               return d.Country == countryName;
-            })
-          )
-        );
+            });
+          }
+        });
       };
 
+      // console.log(document.querySelector(".allPaths"));
+      // const get_contries_onmap = document.querySelectorAll(".allPaths");
+
+      // console.log(get_contries_onmap);
+
+      //.forEach((e) => console.log(e));
+
+      document.querySelectorAll(".allPaths").forEach((e) => {
+        e.addEventListener("mouseover", () => {
+          window.onmousemove = (j) => {
+            x = j.clientX;
+            y = j.clientY;
+            document.getElementById("stats").style.top = y - 20 + "px";
+            document.getElementById("stats").style.left = x + 10 + "px";
+          };
+
+          e.style.fill = "#ff3c00";
+
+          ((countryName) => {
+            country_arr = filterByCountry(countryName);
+            country_arr.then((res) => {
+              male = res.filter((m) => {
+                return m.Gender == "M";
+              }).length;
+              female = res.filter((m) => {
+                return m.Gender == "W";
+              }).length;
+
+              gold = res.filter((m) => {
+                return m.Medal == "Gold";
+              }).length;
+
+              silver = res.filter((m) => {
+                return m.Medal == "Silver";
+              }).length;
+
+              bronze = res.filter((m) => {
+                return m.Medal == "Bronze";
+              }).length;
+
+              document.getElementById("countryp").innerText = e.id;
+
+              if (male !== 0 && female !== 0) {
+                document.getElementById("noDatap").innerText = null;
+                document.getElementById("medalsp").innerText =
+                  "Medals = { G : " +
+                  gold.toString() +
+                  ", S : " +
+                  silver.toString() +
+                  ", B : " +
+                  bronze.toString() +
+                  " }";
+
+                document.getElementById("malep").innerText =
+                  "Male = " + male.toString();
+                document.getElementById("femalep").innerText =
+                  "Female = " + female.toString();
+              } else {
+                document.getElementById("noDatap").innerText = "N/A";
+                document.getElementById("medalsp").innerText = null;
+                document.getElementById("malep").innerText = null;
+                document.getElementById("femalep").innerText = null;
+              }
+              // console.log(
+              //   "M = " + male.toString() + " W = " + female.toString()
+              // );
+            });
+          })(e.id);
+
+          // document.getElementById("statsp").innerText = e.id;
+          document.getElementById("stats").style.opacity = 1;
+        });
+
+        e.addEventListener("mouseleave", () => {
+          e.style.fill = "#ececec";
+          document.getElementById("stats").style.opacity = 0;
+        });
+      });
+
       // Test the filter by country
-      console.log(filterByCountry("Austria"));
+      austria_stats = filterByCountry("Austria");
+      austria_stats.then((res) => {
+        console.log(
+          res.filter((m) => {
+            return m.Gender == "M";
+          })
+        );
+      });
+      console.log(austria_stats);
+      // console.log(
+      //   austria_stats.filter((m) => {
+      //     return m.Gender == "M";
+      //   })
+      // );
     </script>
   </body>
 </html>
