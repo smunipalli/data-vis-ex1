@@ -163,7 +163,7 @@
                     ...new Set(arr_year_sport.map((item) => item.Year)),
                   ];
 
-                  console.log(uniqueYear);
+                  // console.log(uniqueYear);
 
                   uniqueYear.forEach((e) => {
                     let filterByYear = arr_year_sport.filter((x) => {
@@ -172,7 +172,7 @@
                     uniqueSport = [
                       ...new Set(arr_year_sport.map((item) => item.Sport)),
                     ];
-                    console.log(uniqueSport);
+                    // console.log(uniqueSport);
 
                     uniqueSport.forEach((z) => {
                       // console.log(filterByYear);
@@ -227,7 +227,7 @@
                       return myColor(d.value);
                     });
 
-                  console.log(result);
+                  // console.log(result);
 
                   localStorage.removeItem(e.key);
                 },
@@ -252,7 +252,7 @@
             Global Visualization of olympics data (1924-2006)
           </h1>
           <p class="lead">
-            Click on a country to open visualization for that country.
+            Click/hover on a country to open visualization for that country.
           </p>
           <hr class="my-4" />
         </div>
@@ -2779,7 +2779,7 @@
 
                         country_arr.then((res) => {
                           // res.concat[{ country: countryName }];
-                          console.log(res);
+                          // console.log(res);
                           localStorage.setItem(
                             "countryArr",
                             JSON.stringify(res)
@@ -2811,19 +2811,19 @@
                 document.getElementById("stats").style.opacity = 0;
               });
             });
-            // ================================================
-            // TODO: Only for test remove
-            // Test the filter by country
-            austria_stats = filterByCountry("Austria");
-            austria_stats.then((res) => {
-              console.log(
-                res.filter((m) => {
-                  return m.Gender == "M";
-                })
-              );
-            });
-            console.log(austria_stats);
-            // ================================================
+            // // ================================================
+            // // TODO: Only for test remove
+            // // Test the filter by country
+            // austria_stats = filterByCountry("Austria");
+            // austria_stats.then((res) => {
+            //   console.log(
+            //     res.filter((m) => {
+            //       return m.Gender == "M";
+            //     })
+            //   );
+            // });
+            // console.log(austria_stats);
+            // // ================================================
           });
         </script>
       </div>
