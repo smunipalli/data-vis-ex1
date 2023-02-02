@@ -29,6 +29,7 @@
     <!-- Load d3.js -->
     <!-- <script src="https://d3js.org/d3.v6.js"></script> -->
     <!-- Create an element where the map will take place -->
+    <script src="https://d3js.org/d3.v4.js"></script>
 
     <style>
       * {
@@ -99,22 +100,136 @@
       aria-labelledby="countryModalTitle"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="countryModalTitle">Modal title</h5>
           </div>
           <div class="modal-body">
-            ...
-
+            <div id="my_dataviz"></div>
             <script id="modalScript">
+              // set the dimensions and margins of the graph
+              var margin = { top: 30, right: 30, bottom: 30, left: 100 },
+                width = 950 - margin.left - margin.right,
+                height = 950 - margin.top - margin.bottom;
+
+              // d3.csv(
+              //   "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/heatmap_data.csv",
+              //   function (data) {
+              //     console.log(data);
+              //   }
+              // );
               document.addEventListener(
                 "itemInserted",
                 (e) => {
-                  console.log(JSON.parse(e.value));
+                  //clear the canvas before drawing
+                  d3.select("#my_dataviz").html(null);
+
+                  // Build color scale
+                  var myColor = d3
+                    .scaleLinear()
+                    .range(["#FAF757", "#D62617"])
+                    // .range(["#FAF343", "#D62617"])
+                    // .range(["#e3e3e3", "#2848EB"])
+                    .domain([1, 20]);
+
+                  // append the svg object to the body of the page
+                  var svg = d3
+                    .select("#my_dataviz")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr(
+                      "transform",
+                      "translate(" + margin.left + "," + margin.top + ")"
+                    );
+
+                  sports_data = JSON.parse(e.value);
+                  // console.log(JSON.parse(e.value));
+                  arr_year_sport = [];
+                  sports_data.forEach(
+                    (e) =>
+                      (arr_year_sport = arr_year_sport.concat([
+                        { Year: e["Year"], Sport: e["Sport"] },
+                      ]))
+                  );
+
+                  let uniqueYear = [];
+                  let result = [];
+                  let uniqueSport = [];
+
+                  uniqueYear = [
+                    ...new Set(arr_year_sport.map((item) => item.Year)),
+                  ];
+
+                  console.log(uniqueYear);
+
+                  uniqueYear.forEach((e) => {
+                    let filterByYear = arr_year_sport.filter((x) => {
+                      return x.Year === e;
+                    });
+                    uniqueSport = [
+                      ...new Set(arr_year_sport.map((item) => item.Sport)),
+                    ];
+                    console.log(uniqueSport);
+
+                    uniqueSport.forEach((z) => {
+                      // console.log(filterByYear);
+                      let countSports = filterByYear.filter((m) => {
+                        return m.Sport === z;
+                      });
+                      result.push({
+                        Year: e,
+                        Sport: z,
+                        value: countSports.length,
+                      });
+                      // console.log(countSports);
+                    });
+                    // console.log(uniqueSport);
+                  });
+
+                  // Build X scales and axis:
+                  var x = d3
+                    .scaleBand()
+                    .range([0, width])
+                    .domain(uniqueYear)
+                    .padding(0.01);
+                  svg
+                    .append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x));
+
+                  // Build X scales and axis:
+                  var y = d3
+                    .scaleBand()
+                    .range([height, 0])
+                    .domain(uniqueSport)
+                    .padding(0.01);
+                  svg.append("g").call(d3.axisLeft(y));
+
+                  svg
+                    .selectAll()
+                    .data(result, function (d) {
+                      return d.Year + ":" + d.Sport;
+                    })
+                    .enter()
+                    .append("rect")
+                    .attr("x", function (d) {
+                      return x(d.Year);
+                    })
+                    .attr("y", function (d) {
+                      return y(d.Sport);
+                    })
+                    .attr("width", x.bandwidth())
+                    .attr("height", y.bandwidth())
+                    .style("fill", function (d) {
+                      return myColor(d.value);
+                    });
+
+                  console.log(result);
+
                   localStorage.removeItem(e.key);
-                  // window.localStorage.removeItem(e.key);
-                  // localStorage.clear();
                 },
                 false
               );
@@ -2646,6 +2761,7 @@
                         };
 
                         country_arr.then((res) => {
+                          // res.concat[{ country: countryName }];
                           console.log(res);
                           localStorage.setItem(
                             "countryArr",
