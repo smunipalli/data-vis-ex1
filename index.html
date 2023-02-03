@@ -2691,8 +2691,6 @@
                 return json;
               });
 
-            // console.log(olympicsJSON);
-
             // Filter by country name
             const filterByCountry = (countryName) => {
               return olympics_data.then((res) => {
@@ -2706,11 +2704,10 @@
 
             world_map_country_list = new Set();
             document.querySelectorAll(".allPaths").forEach((e) => {
-              // console.log(e.id);
               world_map_country_list.add(e.id);
             });
 
-            console.log(world_map_country_list);
+            // console.log(world_map_country_list);
 
             // workaround for promise
             world_map_country_list.forEach((e) => {
@@ -2730,13 +2727,7 @@
               localStorage.removeItem(e);
             });
 
-            console.log(countryMedalList);
-
-            // country_arr.then((res) => {
-            //   // res.concat[{ country: countryName }];
-            //   // console.log(res);
-            //   localStorage.setItem("countryArr", JSON.stringify(res));
-            // });
+            // console.log(countryMedalList);
 
             // color the map
             const countryColors = d3
@@ -2744,6 +2735,7 @@
               .range(["#ccffb3", "#068119"])
               .domain([0, 216]);
 
+            // source - https://gist.github.com/mlocati/7210513
             const perc2color = (perc) => {
               var r,
                 g,
@@ -2793,7 +2785,7 @@
                   document.getElementById("stats").style.left = x + 10 + "px";
                 };
 
-                // e.style.fill = "#ff3c00";
+                // e.style.fill = "#ff3c00"; // selection highlighting
 
                 // generate stats
                 ((countryName) => {
@@ -2899,7 +2891,7 @@
               });
 
               e.addEventListener("mouseleave", () => {
-                // e.style.fill = "#ececec";
+                // e.style.fill = "#ececec"; // remove selection highlighting when mouse pointer has been removed
                 document.getElementById("stats").style.opacity = 0;
               });
             });
