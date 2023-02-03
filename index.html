@@ -298,12 +298,14 @@
                   <tr>
                     <th scope="col">M</th>
                     <th scope="col">F</th>
+                    <th scope="col">X</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td id="malep"></td>
                     <td id="femalep"></td>
+                    <td id="genderXp"></td>
                   </tr>
                 </tbody>
               </table>
@@ -2689,6 +2691,8 @@
                 return json;
               });
 
+            // console.log(olympicsJSON);
+
             // Filter by country name
             const filterByCountry = (countryName) => {
               return olympics_data.then((res) => {
@@ -2699,6 +2703,49 @@
                 }
               });
             };
+
+            world_map_country_list = new Set();
+            document.querySelectorAll(".allPaths").forEach((e) => {
+              // console.log(e.id);
+              world_map_country_list.add(e.id);
+            });
+
+            console.log(world_map_country_list);
+
+            // workaround for promise
+            world_map_country_list.forEach((e) => {
+              country_arr = filterByCountry(e);
+              country_arr.then((res) => {
+                localStorage.setItem(
+                  e,
+                  JSON.stringify({ name: e, medals: res.length })
+                );
+              });
+            });
+
+            // retrive all the objects from the localstorage and delete them
+            countryMedalList = [];
+            world_map_country_list.forEach((e) => {
+              countryMedalList.push(JSON.parse(localStorage.getItem(e)));
+              localStorage.removeItem(e);
+            });
+
+            console.log(countryMedalList);
+
+            // country_arr.then((res) => {
+            //   // res.concat[{ country: countryName }];
+            //   // console.log(res);
+            //   localStorage.setItem("countryArr", JSON.stringify(res));
+            // });
+
+            // color the map
+            const countryColors = d3
+              .scaleLinear()
+              .range(["#FAF9BA", "#D62617"])
+              .domain([0, 216]);
+
+            // console.log(countryColors(20));
+            // console.log(country_color_obj);
 
             // Show pop up
             document.querySelectorAll(".allPaths").forEach((e) => {
@@ -2721,6 +2768,10 @@
                     }).length;
                     female = res.filter((m) => {
                       return m.Gender == "W";
+                    }).length;
+
+                    genderX = res.filter((m) => {
+                      return m.Gender == "X";
                     }).length;
 
                     gold = res.filter((m) => {
@@ -2752,6 +2803,9 @@
                         male.toString();
                       document.getElementById("femalep").innerText =
                         female.toString();
+
+                      document.getElementById("genderXp").innerText =
+                        genderX.toString();
 
                       // show modal
                       e.addEventListener("click", () => {
@@ -2800,6 +2854,7 @@
 
                       document.getElementById("malep").innerText = null;
                       document.getElementById("femalep").innerText = null;
+                      document.getElementById("genderXp").innerText = null;
                     }
                   });
                 })(e.id);
