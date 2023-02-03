@@ -2734,6 +2734,7 @@
               .scaleLinear()
               .range(["#ccffb3", "#068119"])
               .domain([0, 216]);
+            //216 is the max medals won
 
             // source - https://gist.github.com/mlocati/7210513
             const perc2color = (perc) => {
@@ -2756,17 +2757,6 @@
               // color the map
 
               // Report 1
-              // e.style.fill = (() => {
-              //   const num_medals = countryMedalList.filter((x) => {
-              //     return x.name === e.id;
-              //   })[0].medals;
-              //   if (num_medals === 0) {
-              //     return "#A8A8A8";
-              //   }
-              //   return countryColors(num_medals);
-              // })();
-
-              // Report 2
               e.style.fill = (() => {
                 const num_medals = countryMedalList.filter((x) => {
                   return x.name === e.id;
@@ -2774,8 +2764,19 @@
                 if (num_medals === 0) {
                   return "#A8A8A8";
                 }
-                return perc2color(num_medals);
+                return countryColors(num_medals);
               })();
+
+              // Report 2
+              // e.style.fill = (() => {
+              //   const num_medals = countryMedalList.filter((x) => {
+              //     return x.name === e.id;
+              //   })[0].medals;
+              //   if (num_medals === 0) {
+              //     return "#A8A8A8";
+              //   }
+              //   return perc2color(num_medals);
+              // })();
 
               e.addEventListener("mouseover", () => {
                 window.onmousemove = (j) => {
