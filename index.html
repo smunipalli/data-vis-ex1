@@ -2741,33 +2741,49 @@
             // color the map
             const countryColors = d3
               .scaleLinear()
-              .range(["#FAF9BA", "#D62617"])
-              .domain([0, 500]);
+              .range(["#ccffb3", "#068119"])
+              .domain([0, 216]);
 
-            // // color the map
-            // countryMedalList.forEach((e) => {
-            //   // console.log(e.name);
-            //   if (e.name == "United States") {
-            //     console.log(e);
-            //     console.log(countryColors(e.medals));
-            //   }
-            //   document.getElementById(e.name).style.fill = countryColors(
-            //     e.medals
-            //   );
-            // });
-
-            // console.log(countryColors(20));
-            // console.log(country_color_obj);
+            const perc2color = (perc) => {
+              var r,
+                g,
+                b = 0;
+              if (perc < 50) {
+                r = 255;
+                g = Math.round(5.1 * perc);
+              } else {
+                g = 255;
+                r = Math.round(1510 - 5.1 * perc);
+              }
+              var h = r * 0x10000 + g * 0x100 + b * 0x1;
+              return "#" + ("000000" + h.toString(16)).slice(-6);
+            };
 
             // Show pop up
             document.querySelectorAll(".allPaths").forEach((e) => {
-              // console.log(e.id);
+              // color the map
 
-              e.style.fill = countryColors(
-                countryMedalList.filter((x) => {
+              // Report 1
+              // e.style.fill = (() => {
+              //   const num_medals = countryMedalList.filter((x) => {
+              //     return x.name === e.id;
+              //   })[0].medals;
+              //   if (num_medals === 0) {
+              //     return "#A8A8A8";
+              //   }
+              //   return countryColors(num_medals);
+              // })();
+
+              // Report 2
+              e.style.fill = (() => {
+                const num_medals = countryMedalList.filter((x) => {
                   return x.name === e.id;
-                })[0].medals
-              );
+                })[0].medals;
+                if (num_medals === 0) {
+                  return "#A8A8A8";
+                }
+                return perc2color(num_medals);
+              })();
 
               e.addEventListener("mouseover", () => {
                 window.onmousemove = (j) => {
