@@ -2742,13 +2742,33 @@
             const countryColors = d3
               .scaleLinear()
               .range(["#FAF9BA", "#D62617"])
-              .domain([0, 216]);
+              .domain([0, 500]);
+
+            // // color the map
+            // countryMedalList.forEach((e) => {
+            //   // console.log(e.name);
+            //   if (e.name == "United States") {
+            //     console.log(e);
+            //     console.log(countryColors(e.medals));
+            //   }
+            //   document.getElementById(e.name).style.fill = countryColors(
+            //     e.medals
+            //   );
+            // });
 
             // console.log(countryColors(20));
             // console.log(country_color_obj);
 
             // Show pop up
             document.querySelectorAll(".allPaths").forEach((e) => {
+              // console.log(e.id);
+
+              e.style.fill = countryColors(
+                countryMedalList.filter((x) => {
+                  return x.name === e.id;
+                })[0].medals
+              );
+
               e.addEventListener("mouseover", () => {
                 window.onmousemove = (j) => {
                   x = j.clientX;
@@ -2757,7 +2777,7 @@
                   document.getElementById("stats").style.left = x + 10 + "px";
                 };
 
-                e.style.fill = "#ff3c00";
+                // e.style.fill = "#ff3c00";
 
                 // generate stats
                 ((countryName) => {
@@ -2863,7 +2883,7 @@
               });
 
               e.addEventListener("mouseleave", () => {
-                e.style.fill = "#ececec";
+                // e.style.fill = "#ececec";
                 document.getElementById("stats").style.opacity = 0;
               });
             });
