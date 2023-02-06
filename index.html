@@ -2817,7 +2817,7 @@
 
                     document.getElementById("countryp").innerText = e.id;
 
-                    if (male !== 0 && female !== 0) {
+                    if (male !== 0 || female !== 0 || genderX !== 0) {
                       document.getElementById("noDatap").innerText = null;
                       document.getElementById("genderTable").style.opacity = 1;
                       document.getElementById("medalsTable").style.opacity = 1;
